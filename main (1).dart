@@ -1,9 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:project/applocal/applocal.dart';
-import 'package:project/homepage.dart';
+import 'package:test122/applocal/applocal.dart';
+import 'package:test122/homepage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,91 +11,82 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Localization Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: MyHomePage(),
-      localizationsDelegates: const[
+      home: const SplashScreen(),
+      localizationsDelegates: const [
         AppLocale.delegate,
         GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
+        GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales: const[
-        Locale("ar",""),
-        Locale("en","")
+      supportedLocales: const [
+        Locale("ar", ""),
+        Locale("en", ""),
       ],
-      localeResolutionCallback: (curentLang,supportLang){
-        if(curentLang!=null){
-          for(Locale locale in supportLang){
-            if(locale.languageCode==curentLang.languageCode){
-              return curentLang;
+      localeResolutionCallback: (currentLang, supportedLangs) {
+        if (currentLang != null) {
+          for (Locale locale in supportedLangs) {
+            if (locale.languageCode == currentLang.languageCode) {
+              return currentLang;
             }
           }
         }
-        return supportLang.first;
+        return supportedLangs.first;
       },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  void initState(){
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
     super.initState();
-    startSplashScreenTimer();
+    startSplashTimer();
   }
-  startSplashScreenTimer()async{
-    var _duration = const Duration(seconds: 3);
-    return Timer(_duration,navigtionToNextPage);
-  }
-  void navigtionToNextPage()async{
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage()
-    ), (Route<dynamic>route)=>false);
+
+  void startSplashTimer() {
+    Timer(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
-        title: Text("${getLang(context, "titaal_spash")}"),
+        title: Text(getLang(context, "titaal_spash")),
+        centerTitle: true,
       ),
       body: Center(
-
         child: Column(
-
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-             Text(
-              "${getLang(context,"text")}"
+          children: [
+            Text(
+              getLang(context, "text"),
+              style: const TextStyle(fontSize: 20),
             ),
-            Center(
-              child: Image.asset("assets/image/splashs.png"),
-            )
-
+            const SizedBox(height: 20),
+            Image.asset("assets/image/sign.png", width: 200),
           ],
         ),
       ),
-
     );
   }
 }
